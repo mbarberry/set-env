@@ -1,0 +1,16 @@
+{
+  "name": "set-env",
+  "version": "1.0",
+  "main": "index.js",
+  "author": "Mike Barberry",
+  "bin": {
+    "set-env": "./index.js"
+  },
+  "dependencies": {
+    "lodash.isdate": "^4.0.1",
+    "lodash.isempty": "^4.4.0",
+    "lodash.isplainobject": "^4.0.6",
+    "strftime": "^0.10.1",
+    "toml": "^3.0.0"
+  }
+}
