@@ -6,17 +6,19 @@
 - samBuild
 - samDeploy
 
-## Config
+# Options:
 
-- Config file should be called config.js and located at the project root.
+--config-file can be provided as a relative path. The default is ./config.js
+
+## Config
 
 - It's default export should be an object with the keys: dev, stage and prod.
 
 - Each of the values should also be objects with the keys: awsRegion, awsProfile, ecrRepo, ecrId.
 
-- Samconfig.toml should also be located in the project root and have the table headers: dev, stage, and prod.
+- Samconfig.toml be located at the root of the directory where the command is run and have the table headers: dev, stage, and prod.
 
-- The build ids should be located in parameter overrides and have the key BuildId.
+- Build ids should be located in parameter overrides and have the key "BuildId".
 
 - Commands should be run with the CONFIG_ENV environment variable set to dev, stage, or prod.
 
@@ -76,12 +78,12 @@
 
 ## Usage
 
-Build docker for dev: CONFIG_ENV=dev npm run set-env dockerBuild
+Build docker for dev: CONFIG_ENV=dev set-env dockerBuild
 
-Build docker for staging: CONFIG_ENV=stage npm run set-env dockerBuild
+Build docker for staging: CONFIG_ENV=stage set-env dockerBuild
 
-Perform all dev docker tasks: CONFIG_ENV=dev npm run docker. Where docker = "docker": "npm run set-env dockerLogin && npm run set-env dockerBuild && npm run set-env dockerPush"
+Perform all dev docker tasks: CONFIG_ENV=dev npm run docker. Where docker = "docker": "set-env dockerLogin && set-env dockerBuild && set-env dockerPush"
 
 Perform all stage docker tasks: CONFIG_ENV=stage npm run docker.
 
-SAM build for prod: CONFIG_ENV=prod npm run set-env samBuild
+SAM build for prod: CONFIG_ENV=prod set-env samBuild
