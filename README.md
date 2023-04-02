@@ -78,12 +78,12 @@
 
 ## Usage
 
-Build docker for dev: CONFIG_ENV=dev set-env dockerBuild
+Build docker for dev: `CONFIG_ENV=dev set-env dockerBuild`
 
-Build docker for staging: CONFIG_ENV=stage set-env dockerBuild
+Build docker for staging: `CONFIG_ENV=stage set-env dockerBuild`
 
-Perform all dev docker tasks: CONFIG_ENV=dev npm run docker. Where docker = "docker": "set-env dockerLogin && set-env dockerBuild && set-env dockerPush"
+Perform all dev docker tasks: `CONFIG_ENV=dev npm run docker`. Where "docker" = "set-env dockerLogin && set-env dockerBuild && set-env dockerPush"
 
-Perform all stage docker tasks: CONFIG_ENV=stage npm run docker.
+Perform all stage docker tasks: `CONFIG_ENV=stage npm run docker`.
 
-SAM build for prod: CONFIG_ENV=prod set-env samBuild
+SAM build for prod: `CONFIG_ENV=prod set-env samBuild`
