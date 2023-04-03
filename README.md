@@ -2,16 +2,15 @@
 
 - dockerLogin
 - dockerBuild
-- dockerBuildArg: docker build with --build-arg automatically set to $CONFIG_ENV
 - dockerPush
 - samBuild
 - samDeploy
 
-All commands can be passed --add-options as the last option. For example set-env dockerBuild --config-file ../config.js --add-options --progress string
-
 # Options:
 
---config-file can be provided as a relative path. The default is ./config.js
+--config-file can be provided as a relative path to all commands. The default is ./config.js.
+
+--add-options can be passed to dockerBuild and what follows will be provided to docker build as is. Must be the last option. Example usage: CONFIG_ENV=dev set-env dockerBuild --add-options --progress string --build-arg ConfigEnv=$CONFIG_ENV
 
 ## Config
 

@@ -111,8 +111,6 @@ const validateKeys = (obj, validationArray, n) => {
       environment.BuildId
     } ${additionalArgs.join(' ')} .`,
 
-    dockerBuildArg: `docker build -t ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com/${environment.ecrRepo}:${environment.BuildId} --build-arg ConfigEnv=${process.env.CONFIG_ENV} .`,
-
     dockerPush: `docker push ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com/${environment.ecrRepo}:${environment.BuildId}`,
 
     samBuild: `sam build --config-env=${process.env.CONFIG_ENV}`,
