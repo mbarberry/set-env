@@ -65,6 +65,13 @@ const validateKeys = (obj, validationArray, n) => {
     exit('Invalid command provided.');
   }
 
+  let additionalArgs;
+  if (process.argv.includes('--add-options')) {
+    additionalArgs = process.argv.slice(
+      process.argv.indexOf('--add-options') + 1
+    );
+  }
+
   const config = await attemptImport();
 
   const validateConfig = (() => {
@@ -97,9 +104,19 @@ const validateKeys = (obj, validationArray, n) => {
 
   const commands = {
     dockerLogin: `aws ecr get-login-password --region ${environment.awsRegion} | docker login --username AWS --password-stdin ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com`,
-    dockerBuild: `docker build --progress string -t ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com/${environment.ecrRepo}:${environment.BuildId} --build-arg ConfigEnv=${process.env.CONFIG_ENV} .`,
+
+    dockerBuild: `docker build -t ${environment.ecrId}.dkr.ecr.${
+      environment.awsRegion
+    }.amazonaws.com/${environment.ecrRepo}:${
+      environment.BuildId
+    } ${additionalArgs.join(' ')} .`,
+
+    dockerBuildArg: `docker build -t ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com/${environment.ecrRepo}:${environment.BuildId} --build-arg ConfigEnv=${process.env.CONFIG_ENV} .`,
+
     dockerPush: `docker push ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com/${environment.ecrRepo}:${environment.BuildId}`,
+
     samBuild: `sam build --config-env=${process.env.CONFIG_ENV}`,
+
     samDeploy: `sam deploy --config-env=${process.env.CONFIG_ENV}`,
   };
 

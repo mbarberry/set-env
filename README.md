@@ -2,9 +2,12 @@
 
 - dockerLogin
 - dockerBuild
+- dockerBuildArg: docker build with --build-arg automatically set to $CONFIG_ENV
 - dockerPush
 - samBuild
 - samDeploy
+
+All commands can be passed --add-options as the last option. For example set-env dockerBuild --config-file ../config.js --add-options --progress string
 
 # Options:
 
@@ -31,19 +34,19 @@
         awsRegion: 'us-east-1',
         awsProfile: 'my-profile-dev',
         ecrId: '09809809809',
-        ecrRepo: 'my-awsome-project',
+        ecrRepo: 'my-awsome-project-dev',
       },
       stage: {
         awsRegion: 'us-east-1',
-        awsProfile: 'my-profile-dev',
+        awsProfile: 'my-profile-stage',
         ecrId: '545454545',
-        ecrRepo: 'my-awsome-project',
+        ecrRepo: 'my-awsome-project-stag',
       },
       prod: {
         awsRegion: 'us-east-1',
-        awsProfile: 'my-profile-dev',
+        awsProfile: 'my-profile-prod',
         ecrId: '8888888888',
-        ecrRepo: 'my-awsome-project',
+        ecrRepo: 'my-awsome-project-prod',
       },
     };
 
