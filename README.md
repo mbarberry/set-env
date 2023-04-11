@@ -1,5 +1,13 @@
 This utility runs the provided command after setting environment variables based on $CONFIG_ENV and passed options.
 
+Usage: `$ set-env <options> -- '<shell command>'`
+
+Example: "set-env -a -e -- 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $ECR_ID.dkr.ecr.us-west-2.amazonaws.com'"
+
+Example: "set-env -e -u -- 'docker build -t $ECR_ID.dkr.ecr.us-west-2.amazonaws.com/repo-name:$BUILD_ID .'"
+
+Example: "set-env -e -i -- 'docker push $ECR_ID.dkr.ecr.us-west-2.amazonaws.com/repo-name:$BUILD_ID'"
+
 $CONFIG_ENV can be one of dev, stag, or prod.
 
 - The -a option sets AWS_PROFILE
