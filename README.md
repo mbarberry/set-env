@@ -2,10 +2,10 @@ This utility runs the provided command after setting environment variables based
 
 $CONFIG_ENV can be one of dev, stag, or prod.
 
-The -a option sets AWS_PROFILE
-The -e option sets ECR_ID
-The -i option sets BUILD_ID based on the current value (more on that in a minute)
-The -u option sets BUILD_ID after incrementing it by one and writing the new number back to the file
+- The -a option sets AWS_PROFILE
+- The -e option sets ECR_ID
+- The -i option sets BUILD_ID based on the current value (more on that in a minute)
+- The -u option sets BUILD_ID after incrementing it by one and writing the new number back to the file
 
 ECR_ID and BUILD_ID values are retrieved from samconfig.toml under the table header matching the $CONFIG_ENV.deploy.parameters. For example, dev.deploy.parameters.
 Note: The program looks for samconfig.toml in the directory where the command is invoked. Not where this program file is located. Using npm --prefix sets the invoking location to that prefix.
