@@ -58,7 +58,7 @@ const getIdsFromSamconfig = async () => {
 
   const environment = {};
   if (options.includes('-a') && !process.env.PIPELINE) {
-    environment.AWS_PROFILE = `iDPCC-FluHubAdmin-${configEnv.toUpperCase()}`;
+    environment.AWS_PROFILE = require('./profiles.js')[configEnv];
   }
   if (options.includes('-e')) {
     environment.ECR_ID = ecrId;
