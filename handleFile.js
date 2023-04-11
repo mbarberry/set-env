@@ -1,3 +1,5 @@
+'use strict';
+
 const fs = require('node:fs/promises');
 
 const toml = require('toml');
@@ -8,7 +10,7 @@ async function main(configEnv, update) {
   const data = toml.parse(file);
 
   if (!data[configEnv]) {
-    throw Error('Table header in samconfig should match $CONFIG_ENV');
+    throw Error('Samconfig should have table headers that match $CONFIG_ENVs');
   }
 
   const {

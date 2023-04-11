@@ -1,12 +1,14 @@
 #!/usr/bin/env node
 
+'use strict';
+
 const process = require('node:process');
 const childProcess = require('node:child_process');
 
 const handleFile = require('./handleFile.js');
 
 const args = process.argv;
-configEnv = process.env.CONFIG_ENV;
+const configEnv = process.env.CONFIG_ENV;
 
 const exit = (err) => {
   console.error(err);
@@ -28,10 +30,13 @@ if (!args.includes('--')) {
   exit(`'--' should be provided to separate options and command`);
 }
 const options = args.slice(2, args.indexOf('--'));
+if (options.includes('i') && options.includes('u')) {
+  exit('Id and update id options are not allowed together');
+}
 const shouldHandleFile =
   options.includes('-e') || options.includes('-i') || options.includes('-u');
 const command = args.slice(args.indexOf('--') + 1).join(' ');
-if (!command) exit('Command should be provided');
+if (!command) exit('A command should be provided');
 
 const getIdsFromSamconfig = async () => {
   try {
