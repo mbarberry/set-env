@@ -1,126 +1,70 @@
 #!/usr/bin/env node
 
 const process = require('node:process');
-const path = require('node:path');
-const fs = require('node:fs/promises');
 const childProcess = require('node:child_process');
+
 const handleFile = require('./handleFile.js');
+
+const args = process.argv;
+configEnv = process.env.CONFIG_ENV;
 
 const exit = (err) => {
   console.error(err);
   process.exit(1);
 };
 
-if (!['dev', 'stage', 'prod'].includes(process.env.CONFIG_ENV)) {
-  exit('$CONFIG_ENV should equal dev, stage, or prod.');
+if (!['dev', 'stag', 'prod'].includes(configEnv)) {
+  exit('$CONFIG_ENV should equal dev, stag, or prod.');
 }
 
-const attemptImport = async () => {
+const ALLOWED_OPTIONS = ['-a', '-e', '-i', '-u'];
+let idx = 2;
+while (idx < args.length && args[idx] !== '--') {
+  if (!ALLOWED_OPTIONS.includes(args[idx])) exit('Invalid option applied');
+  idx++;
+}
+
+if (!args.includes('--')) {
+  exit(`'--' should be provided to separate options and command`);
+}
+const options = args.slice(2, args.indexOf('--'));
+const shouldHandleFile =
+  options.includes('-e') || options.includes('-i') || options.includes('-u');
+const command = args.slice(args.indexOf('--') + 1).join(' ');
+if (!command) exit('Command should be provided');
+
+const getIdsFromSamconfig = async () => {
   try {
-    let configPath = '/config.js';
-
-    if (process.argv.includes('--config-file')) {
-      const providedPath =
-        process.argv[process.argv.indexOf('--config-file') + 1];
-
-      if (!providedPath) {
-        exit('Path is required with the --config-file option.');
-      }
-
-      const dir = await fs.readdir(
-        path.join(
-          process.cwd(),
-          providedPath.slice(0, providedPath.lastIndexOf('/'))
-        )
-      );
-      const file = providedPath.slice(providedPath.lastIndexOf('/') + 1);
-      if (!dir.includes(file)) exit('Invalid config file path.');
-
-      configPath = providedPath;
-    }
-    const config = require(path.join(process.cwd(), configPath));
-    return config;
+    const ids = await handleFile(configEnv, options.includes('-u'));
+    return ids;
   } catch (err) {
-    exit(err);
+    exit(err.message);
   }
-};
-
-const validateKeys = (obj, validationArray, n) => {
-  if (!Object.keys(obj).length === n) return false;
-  const bool = Object.keys(obj).every((key) => validationArray.includes(key));
-  return bool;
 };
 
 (async function main() {
-  const mainArg = process.argv[2];
-  if (
-    ![
-      'dockerLogin',
-      'dockerBuild',
-      'dockerPush',
-      'samBuild',
-      'samDeploy',
-    ].includes(mainArg)
-  ) {
-    exit('Invalid command provided.');
+  let ecrId, buildId;
+
+  if (shouldHandleFile) {
+    const ids = await getIdsFromSamconfig();
+    ecrId = ids.ecrId;
+    buildId = ids.buildId;
   }
 
-  let additionalArgs;
-  if (process.argv.includes('--add-options')) {
-    additionalArgs = process.argv.slice(
-      process.argv.indexOf('--add-options') + 1
-    );
+  const environment = {};
+  if (options.includes('-a') && !process.env.PIPELINE) {
+    environment.AWS_PROFILE = `iDPCC-FluHubAdmin-${configEnv.toUpperCase()}`;
+  }
+  if (options.includes('-e')) {
+    environment.ECR_ID = ecrId;
+  }
+  if (options.includes('-i') || options.includes('-u')) {
+    environment.BUILD_ID = buildId;
   }
 
-  const config = await attemptImport();
-
-  const validateConfig = (() => {
-    const allEnvsCorrect = validateKeys(config, ['dev', 'stage', 'prod'], 3);
-    let allPropsCorrect = true;
-    for (const target of Object.values(config)) {
-      if (
-        !validateKeys(
-          target,
-          ['awsRegion', 'awsProfile', 'ecrId', 'ecrRepo'],
-          4
-        )
-      )
-        allPropsCorrect = false;
-    }
-    if (!allEnvsCorrect || !allPropsCorrect)
-      exit(`Config file doesn't match the required format.`);
-  })();
-
-  const environment = { ...config[process.env.CONFIG_ENV] };
-
-  if (mainArg === 'dockerBuild' || mainArg === 'dockerPush') {
-    try {
-      const id = await handleFile(mainArg === 'dockerBuild');
-      environment.BuildId = id;
-    } catch (err) {
-      exit(err.message);
-    }
-  }
-
-  const commands = {
-    dockerLogin: `aws ecr get-login-password --region ${environment.awsRegion} | docker login --username AWS --password-stdin ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com`,
-
-    dockerBuild: `docker build -t ${environment.ecrId}.dkr.ecr.${
-      environment.awsRegion
-    }.amazonaws.com/${environment.ecrRepo}:${
-      environment.BuildId
-    } ${additionalArgs.join(' ')} .`,
-
-    dockerPush: `docker push ${environment.ecrId}.dkr.ecr.${environment.awsRegion}.amazonaws.com/${environment.ecrRepo}:${environment.BuildId}`,
-
-    samBuild: `sam build --config-env=${process.env.CONFIG_ENV}`,
-
-    samDeploy: `sam deploy --config-env=${process.env.CONFIG_ENV}`,
-  };
-
-  childProcess.spawn(commands[mainArg], {
+  childProcess.spawn(command, {
     shell: '/bin/bash',
     stdio: 'inherit',
-    env: { ...process.env, AWS_PROFILE: environment.awsProfile },
+    env: { ...environment },
   });
 })();

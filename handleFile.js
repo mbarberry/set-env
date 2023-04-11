@@ -1,16 +1,13 @@
-const process = require('node:process');
 const fs = require('node:fs/promises');
 
 const toml = require('toml');
 const json2toml = require('./json2Toml.js');
 
-async function main(update) {
+async function main(configEnv, update) {
   const file = await fs.readFile('./samconfig.toml');
   const data = toml.parse(file);
 
-  const target = process.env.CONFIG_ENV;
-
-  if (!data[target]) {
+  if (!data[configEnv]) {
     throw Error('Table header in samconfig should match $CONFIG_ENV');
   }
 
@@ -18,22 +15,25 @@ async function main(update) {
     deploy: {
       parameters: { parameter_overrides },
     },
-  } = data[target];
+  } = data[configEnv];
+
+  let buildId, ecrId;
 
   for (let idx = 0; idx < parameter_overrides.length; idx++) {
     const param = parameter_overrides[idx];
-    if (param.includes('BuildId')) {
-      let id = Number(param.slice(param.indexOf('=') + 1));
-
+    if (param.includes('BuildID')) {
+      buildId = Number(param.slice(param.indexOf('=') + 1));
       if (update) {
-        parameter_overrides[idx] = `BuildId=${++id}`;
+        parameter_overrides[idx] = `BuildID=${++buildId}`;
         const backToToml = json2toml(data, { newlineAfterSection: true });
         await fs.writeFile('./samconfig.toml', backToToml);
       }
-
-      return id;
+    } else if (param.includes('ImageRepo')) {
+      ecrId = param.slice(param.indexOf('=') + 1, param.indexOf('.'));
     }
   }
+
+  return { buildId, ecrId };
 }
 
 module.exports = main;

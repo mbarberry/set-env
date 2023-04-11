@@ -1,0 +1,18 @@
+version = 1.1
+
+[dev.deploy.parameters]
+stack_name = "StrapiFluhubECS"
+region = "us-east-1"
+parameter_overrides = ["Environment=Dev","ProjectName=StrapiFluhub","ImageRepo=852507783007.dkr.ecr.us-east-1.amazonaws.com/strapi-fluhub-dev","BuildID=35","NetworkStack=CEIRRVPC","IAMStack=Fluhub-stack-request","HostedZoneID=Z0866758AUA9B13L2NSC","ListenerPriority=11","AWSRegion=us-east-1","UploadsBucket=strapi-fluhub-dev-uploads","DBHost=strapifluhubdb-dbcluster-dlaf26bcrk2w.cluster-cpnlyulqjgge.us-east-1.rds.amazonaws.com","DBName=strapi","DBPassword=0izVMFOONCw9JVa1rzT!37qTWAum8C","JWTSecret=t9ni7zkg65iL05xY3pcacA==","AdminJWTSecret=obG3cYSy3ASIkiE8TSzjUA==","APITokenSalt=Ia40YaJBwQePorIhGYJhKw==","AppKeys=jG6H9gGH7ojO8BQ4GsImWw==,IG3eg8/4Pk682TR+6cwgDw==,crMH2K29PWkzwlBkB4e9dA==,OXlQMyxGvIfrJTRm8G/zgQ==","Host=0.0.0.0","Port=1337"]
+
+[stag.deploy.parameters]
+stack_name = "StrapiFluhubECS"
+capabilities = "CAPABILITY_IAM"
+region = "us-east-1"
+parameter_overrides = ["Environment=Stage","ProjectName=StrapiFluhub","ImageRepo=005925987320.dkr.ecr.us-east-1.amazonaws.com/strapi-fluhub-stage","BuildID=17","NetworkStack=CEIRRVPC","IAMStack=Fluhub-stack-request","HostedZoneID=Z034194118Z4LL1O3OV93","ListenerPriority=11","AWSRegion=us-east-1","UploadsBucket=strapi-fluhub-stag-uploads","DBHost=strapifluhubdb-dbcluster-k7v3jjxzfnv6.cluster-callgipkjpdw.us-east-1.rds.amazonaws.com","DBName=strapi","DBPassword=W7yA-ZUPRXKPDZIRilEN=ZFlifN6-B","JWTSecret=t9ni7zkg65iL05xY3pcacA==","AdminJWTSecret=obG3cYSy3ASIkiE8TSzjUA==","APITokenSalt=Ia40YaJBwQePorIhGYJhKw==","AppKeys=jG6H9gGH7ojO8BQ4GsImWw==,IG3eg8/4Pk682TR+6cwgDw==,crMH2K29PWkzwlBkB4e9dA==,OXlQMyxGvIfrJTRm8G/zgQ==","Host=0.0.0.0","Port=1337"]
+
+[prod.deploy.parameters]
+stack_name = "StrapiFluhubECS"
+region = "us-east-1"
+parameter_overrides = ["Environment=Prod","ProjectName=StrapiFluhub","ImageRepo=643366142385.dkr.ecr.us-west-2.amazonaws.com/strapi-fluhub-prod","BuildID=1","NetworkStack=CEIRR-VPC","IAMStack=Fluhub-stack-request","HostedZoneID=Z06916782HYLUGHX2CWU8","ListenerPriority=11","AWSRegion=us-east-1","UploadsBucket=strapi-fluhub-prod-uploads","DBHost=","DBName=strapi","DBPassword=","JWTSecret=t9ni7zkg65iL05xY3pcacA==","AdminJWTSecret=obG3cYSy3ASIkiE8TSzjUA==","APITokenSalt=Ia40YaJBwQePorIhGYJhKw==","AppKeys=jG6H9gGH7ojO8BQ4GsImWw==,IG3eg8/4Pk682TR+6cwgDw==,crMH2K29PWkzwlBkB4e9dA==,OXlQMyxGvIfrJTRm8G/zgQ==","Host=0.0.0.0","Port=1337"]
+
