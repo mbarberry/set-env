@@ -4,6 +4,7 @@
 
 const process = require('node:process');
 const childProcess = require('node:child_process');
+const fs = require('node:fs/promises');
 
 const handleFile = require('./handleFile.js');
 
@@ -19,7 +20,7 @@ if (!['dev', 'stag', 'prod'].includes(configEnv)) {
   exit('$CONFIG_ENV should equal dev, stag, or prod.');
 }
 
-const ALLOWED_OPTIONS = ['-a', '-e', '-i', '-u'];
+const ALLOWED_OPTIONS = ['-a', '-e', '-i', '-u', '-v'];
 let idx = 2;
 while (idx < args.length && args[idx] !== '--') {
   if (!ALLOWED_OPTIONS.includes(args[idx])) exit('Invalid option applied');
@@ -33,6 +34,7 @@ const options = args.slice(2, args.indexOf('--'));
 if (options.includes('-i') && options.includes('-u')) {
   exit('Id and update id options are not allowed together');
 }
+
 const shouldHandleFile =
   options.includes('-e') || options.includes('-i') || options.includes('-u');
 const command = args[args.indexOf('--') + 1];
@@ -47,8 +49,19 @@ const getIdsFromSamconfig = async () => {
   }
 };
 
+const lookForEnvFile = async () => {
+  const dir = await fs.readdir('.');
+  if (!dir.includes(`.env.${process.env.CONFIG_ENV}`)) {
+    exit('A .env.$CONFIG_ENV file should exist');
+  }
+};
+
 (async function main() {
   let ecrId, buildId;
+
+  if (options.includes('-v')) {
+    await lookForEnvFile();
+  }
 
   if (shouldHandleFile) {
     const ids = await getIdsFromSamconfig();
@@ -56,7 +69,7 @@ const getIdsFromSamconfig = async () => {
     buildId = ids.buildId;
   }
 
-  const environment = {};
+  const environment = { ['CONFIG_ENV']: configEnv };
 
   if (options.includes('-a') && !process.env.PIPELINE) {
     try {

@@ -16,6 +16,7 @@ $CONFIG_ENV can be one of dev, stag, or prod.
 - The -e option sets ECR_ID
 - The -i option sets BUILD_ID based on the current value (more on that in a minute)
 - The -u option sets BUILD_ID after incrementing it by one and writing the new number back to the file
+- The -v options checks that a .env.\$CONFIG_ENV file is located in the process current working directory
 
 Note: -i and -u options cannot be passed together.
 
