@@ -30,12 +30,12 @@ if (!args.includes('--')) {
   exit(`'--' should be provided to separate options and command`);
 }
 const options = args.slice(2, args.indexOf('--'));
-if (options.includes('i') && options.includes('u')) {
+if (options.includes('-i') && options.includes('-u')) {
   exit('Id and update id options are not allowed together');
 }
 const shouldHandleFile =
   options.includes('-e') || options.includes('-i') || options.includes('-u');
-const command = args.slice(args.indexOf('--') + 1).join(' ');
+const command = args[args.indexOf('--') + 1];
 if (!command) exit('A command should be provided');
 
 const getIdsFromSamconfig = async () => {
@@ -57,8 +57,15 @@ const getIdsFromSamconfig = async () => {
   }
 
   const environment = {};
+
   if (options.includes('-a') && !process.env.PIPELINE) {
-    environment.AWS_PROFILE = require('./profiles.js')[configEnv];
+    try {
+      environment.AWS_PROFILE = require('./profiles.js')[configEnv];
+    } catch (err) {
+      exit(
+        'Double check a profiles.js file is in this directory and contains a $CONFIG_ENV value'
+      );
+    }
   }
   if (options.includes('-e')) {
     environment.ECR_ID = ecrId;

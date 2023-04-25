@@ -9,9 +9,27 @@ async function main(configEnv, update) {
   const file = await fs.readFile('./samconfig.toml');
   const data = toml.parse(file);
 
-  if (!data[configEnv]) {
-    throw Error('Samconfig should have table headers that match $CONFIG_ENVs');
-  }
+  (function checkConfigKeys(obj, arr) {
+    if (arr.length === 0) return;
+    const curr = arr.shift();
+    if (!obj[curr]) {
+      throw Error(
+        'Samconfig should have [$CONFIG_ENV.deploy.parameters] table and parameter_overrides key'
+      );
+    }
+    if (curr === 'parameter_overrides') {
+      const overrides = obj[curr].join('');
+      if (
+        !overrides.includes('BuildID=') ||
+        !overrides.includes('ImageRepo=')
+      ) {
+        throw Error(
+          'Parameter overrides should have BuildID and ImageRepo values'
+        );
+      }
+    }
+    return checkConfigKeys(obj[curr], arr);
+  })(data, [configEnv, 'deploy', 'parameters', 'parameter_overrides']);
 
   const {
     deploy: {
