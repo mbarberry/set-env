@@ -30,10 +30,13 @@ If a PIPELINE environment variable is detected, AWS_PROFILE will not be set even
 Note: The program looks for samconfig.toml and profile.js files in the current working directory of the node process.
 
 Example profiles.js:
+
+    ```javascript
     module.exports = {
       dev: <your_dev_profile>,
       stage: <your_staging_profile>,
       prod: <your_production_profile>
     }
+    ```
 
 To use as a package run `npm pack` and `npm install` the tarball in a project.
