@@ -1,5 +1,7 @@
 This utility runs the provided command after setting environment variables based on $CONFIG_ENV and passed options.
 
+Note: Usage examples assume package usage. Otherwise, replace set-env with `node index.js`
+
 Usage: `$ set-env <options> -- '<shell command>'`
 
 Example: "set-env -a -e -- 'aws ecr get-login-password --region us-west-2 | docker login --username AWS --password-stdin $ECR_ID.dkr.ecr.us-west-2.amazonaws.com'"
@@ -26,5 +28,12 @@ AWS profiles are retrieved from a file called './profiles.js'. This file should 
 If a PIPELINE environment variable is detected, AWS_PROFILE will not be set even if the option is passed.
 
 Note: The program looks for samconfig.toml and profile.js files in the current working directory of the node process.
+
+Example profiles.js:
+    module.exports = {
+      dev: <your_dev_profile>,
+      stage: <your_staging_profile>,
+      prod: <your_production_profile>
+    }
 
 To use as a package run `npm pack` and `npm install` the tarball in a project.
