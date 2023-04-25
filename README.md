@@ -31,12 +31,12 @@ Note: The program looks for samconfig.toml and profile.js files in the current w
 
 Example profiles.js:
 
-    ```javascript
-    module.exports = {
-      dev: <your_dev_profile>,
-      stage: <your_staging_profile>,
-      prod: <your_production_profile>
-    }
-    ```
+```javascript
+module.exports = {
+  dev: <your_dev_profile>,
+  stage: <your_staging_profile>,
+  prod: <your_production_profile>
+}
+```
 
 To use as a package run `npm pack` and `npm install` the tarball in a project.
