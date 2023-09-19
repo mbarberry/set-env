@@ -12,5 +12,6 @@
     "lodash.isplainobject": "^4.0.6",
     "strftime": "^0.10.1",
     "toml": "^3.0.0"
-  }
+  },
+  "license": "GPL-3.0"
 }
